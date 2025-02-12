@@ -1,0 +1,292 @@
+<div class="modal-header">
+	<h1 class="modal-title fs-5" id="myModal">{{ text_reminder }}{{ name }}</h1>
+	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+	<div class="tmd-alert"></div>
+	<div id="dob-customer">
+		<div class="row">
+			<div class="col-sm-4">
+				<div class="mb-3">
+					<label class="form-label" for="input-mail">{{ entry_to_mail }}</label>
+					<input type="text" name="email" value="{{ email }}" readonly placeholder="{{ entry_to_mail }}" id="input-mail" class="form-control" />
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="mb-3">
+					<label class="form-label" for="input-dob">{{ entry_dob }}</label>
+					<input type="text" name="date_of_birth" value="{{ date_of_birth }}" readonly placeholder="{{ entry_dob }}" id="input-dob" class="form-control" />
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="mb-3">
+					<label class="form-label" for="input-code">{{ entry_code }}</label>
+					<input type="text" name="code" value="{{ code }}" readonly placeholder="{{ entry_code }}" id="input-code" class="form-control" />
+				</div>
+			</div>
+
+			<div class="col-sm-6">
+				<div class="mb-3 required">
+					<label class="col-form-label" for="input-date_start">{{ entry_date_start }}</label>
+					<div class="input-group ">
+						<input type="text" name="date_start" value="" data-date-format="YYYY-MM-DD" placeholder="{{ entry_start }}" id="input-date_start" class="form-control datestart"/>
+        				<div class="input-group-text"><i class="fa-regular fa-calendar"></i></div>
+					    <div id="error-date_start" class="invalid-feedback"></div>
+                    </div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="mb-3 required">
+					<label class="col-form-label" for="input-date_end">{{ entry_date_end }}</label>
+					<div class="input-group ">
+						<input type="text" name="date_end" value="" data-date-format="YYYY-MM-DD" placeholder="{{ entry_end }}" id="input-date_end" class="form-control dateend"/>
+        				<div class="input-group-text"><i class="fa-regular fa-calendar"></i></div>
+					    <div id="error-date_end" class="invalid-feedback"></div>
+                    </div>
+				</div>
+			</div>
+			
+			<div class="col-sm-4">
+				<div class="mb-3">
+				<label class="form-label" for="input-dis_type">{{ entry_dis_type }}</label>
+				  <select name="dis_type" id="input-dis_type" class="form-control">
+					{% for type in types %}
+					{% if type.value == module_tmdbirthday_dis_type %}
+					<option value="{{ type.value }}" selected="selected">{{ type.text }}</option>
+					{% else %}
+					<option value="{{ type.value }}">{{ type.text }}</option>
+					{% endif %}
+					{% endfor %}
+				  </select>
+				</div>
+			</div>
+
+			<div class="col-sm-4">
+				<div class="mb-3 required">
+					<label class="col-form-label" for="input-dis_value">{{ entry_dis_value }}</label>
+					<input type="text" name="dis_value" value="{{ module_tmdbirthday_dis_value }}" placeholder="{{ entry_dis_value }}" id="input-dis_value" class="form-control" />
+				    <div id="error-dis_value" class="invalid-feedback"></div>
+                </div>
+			</div>
+
+			<div class="col-sm-4">
+				<div class="mb-3 required">
+					<label class="col-form-label" for="input-total">{{ entry_total }}</label>
+					<input type="text" name="total_amount" value="{{ module_tmdbirthday_total_amount }}" placeholder="{{ entry_total }}" id="input-total" class="form-control" />
+				    <div id="error-total" class="invalid-feedback"></div>
+                </div>
+			</div>
+
+			<div class="col-sm-6">
+				<div class="mb-3">
+					<label class="form-label" for="input-use_coupon">{{ entry_use_coupon }}</label>
+					<input type="text" name="use_coupon" placeholder="{{ entry_use_coupon }}" id="input-use_coupon" class="form-control" />
+				</div>
+			</div>
+
+			<div class="col-sm-6">
+				<div class="mb-3">
+					<label class="form-label" for="input-use_customer">{{ entry_use_customer }}</label>
+					<input type="text" name="use_customer" placeholder="{{ entry_use_customer }}" id="input-use_customer" class="form-control" />
+				</div>
+			</div>
+			
+            <div class="col-sm-6">
+				<div class="mb-3">
+					<label class="form-label">{{ entry_products }}</label>
+					{% if(VERSION>='4.0.2.0') %}
+					<input type="text" name="product" value="" placeholder="{{ entry_products }}" id="input-newproduct" data-oc-target="autocomplete-newproduct" class="form-control" autocomplete="off">
+					<ul id="autocomplete-newproduct" class="dropdown-menu"></ul>
+					{% else %}
+					<input type="text" name="product" value="" placeholder="{{ entry_products }}" id="input-newproduct" list="list-newproduct" class="form-control"/>
+					<datalist id="list-newproduct"></datalist>
+					{% endif %}
+                    <div class="form-control p-0" style="height: 150px; overflow: auto;">
+                      <table id="customer-product" class="table table-sm m-0">
+                      	<tbody>
+                      	</tbody>
+                      </table>
+                    </div>
+                  <div class="form-text">{{ help_product }}</div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+				<div class="mb-3">
+					<label class="form-label">{{ entry_categories }}</label>
+					{% if(VERSION>='4.0.2.0') %}
+					<input type="text" name="category" value="" placeholder="{{ entry_categories }}" id="input-newcategory" data-oc-target="autocomplete-newcategory" class="form-control" autocomplete="off">
+					<ul id="autocomplete-newcategory" class="dropdown-menu"></ul>
+					{% else %}
+					<input type="text" name="category" value="" placeholder="{{ entry_categories }}" id="input-newcategory" list="list-newcategory" class="form-control"/>
+					<datalist id="list-newcategory"></datalist>
+					{% endif %}
+                    <div class="form-control p-0" style="height: 150px; overflow: auto;">
+                      <table id="customer-category" class="table table-sm m-0">
+                      	<tbody>
+                      	</tbody>
+                      </table>
+                    </div>
+                  <div class="form-text">{{ help_category }}</div>
+                </div>
+            </div>
+			
+			<div class="col-sm-8 float-end">
+				<button type="button" data-loading-text="{{ text_loading }}" class="btn btn-info btn-lg tmdgiftadd" rel="{{ customer_id }}">{{ text_addgift }}</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript"><!--
+$('#myModal').on('hidden.bs.modal', function () {
+    $("#myModal").load(" #myModal > *");
+})
+//tmddate	
+var oc_datetimepicker = function() {
+	$(this).daterangepicker({
+		singleDatePicker: true,
+		autoApply: true,
+		autoUpdateInput: true,
+		locale: {
+			format: 'YYYY-MM-DD'
+		}
+	}, function(start, end) {
+		$(this.element).val(start.format('YYYY-MM-DD'));
+	});
+}
+
+$(document).on('focus', '.datestart', oc_datetimepicker);
+$(document).on('focus', '.dateend', oc_datetimepicker);
+//--></script>
+
+{% if(VERSION>='4.0.2.0') %}
+<script type="text/javascript">
+// Product
+$('#input-newproduct').autocomplete({
+    'source': function (request, response) {
+        $.ajax({
+            url: 'index.php?route=catalog/product.autocomplete&user_token={{ user_token }}&filter_name=' + encodeURIComponent(request),
+            dataType: 'json',
+            success: function (json) {
+                response($.map(json, function (item) {
+                    return {
+                        label: item['name'],
+                        value: item['product_id']
+                    }
+                }));
+            }
+        });
+    },
+    'select': function (item) {
+        $('#input-newproduct').val('');
+        $('#customer-product-' + item['value']).remove();
+
+        html = '<tr id="customer-product-' + item['value'] + '">';
+        html += '  <td>' + item['label'] + '<input type="hidden" name="products[]" value="' + item['value'] + '"/></td>';
+        html += '  <td class="text-end"><button type="button" class="btn btn-danger btn-sm"><i class="fas fa-minus-circle"></i></button></td>';
+        html += '</tr>';
+
+        $('#customer-product tbody').append(html);
+    }
+});
+$('#customer-product').on('click', '.btn', function () {
+    $(this).parent().parent().remove();
+});
+
+// Category
+$('#input-newcategory').autocomplete({
+    'source': function (request, response) {
+        $.ajax({
+            url: 'index.php?route=catalog/category.autocomplete&user_token={{ user_token }}&filter_name=' + encodeURIComponent(request),
+            dataType: 'json',
+            success: function (json) {
+                response($.map(json, function (item) {
+                    return {
+                        label: item['name'],
+                        value: item['category_id']
+                    }
+                }));
+            }
+        });
+    },
+    'select': function (item) {
+        $('#input-newcategory').val('');
+        $('#customer-category-' + item['value']).remove();
+
+        html = '<tr id="customer-category-' + item['value'] + '">';
+        html += '  <td>' + item['label'] + '<input type="hidden" name="categories[]" value="' + item['value'] + '"/></td>';
+        html += '  <td class="text-end"><button type="button" class="btn btn-danger btn-sm"><i class="fas fa-minus-circle"></i></button></td>';
+        html += '</tr>';
+
+        $('#customer-category tbody').append(html);
+    }
+});
+$('#customer-category').on('click', '.btn', function () {
+    $(this).parent().parent().remove();
+});
+//--></script>
+{% else %}
+<script type="text/javascript">
+// Category
+$('#input-newproduct').autocomplete({
+    'source': function (request, response) {
+        $.ajax({
+            url: 'index.php?route=catalog/product|autocomplete&user_token={{ user_token }}&filter_name=' + encodeURIComponent(request),
+            dataType: 'json',
+            success: function (json) {
+                response($.map(json, function (item) {
+                    return {
+                        label: item['name'],
+                        value: item['product_id']
+                    }
+                }));
+            }
+        });
+    },
+    'select': function (item) {
+        $('#input-newproduct').val('');
+        $('#customer-product-' + item['value']).remove();
+
+        html = '<tr id="customer-product-' + item['value'] + '">';
+        html += '  <td>' + item['label'] + '<input type="hidden" name="products[]" value="' + item['value'] + '"/></td>';
+        html += '  <td class="text-end"><button type="button" class="btn btn-danger btn-sm"><i class="fas fa-minus-circle"></i></button></td>';
+        html += '</tr>';
+        $('#customer-product tbody').append(html);
+    }
+});
+$('#customer-product').on('click', '.btn', function () {
+    $(this).parent().parent().remove();
+});
+
+// Category
+$('#input-newcategory').autocomplete({
+    'source': function (request, response) {
+        $.ajax({
+            url: 'index.php?route=catalog/category|autocomplete&user_token={{ user_token }}&filter_name=' + encodeURIComponent(request),
+            dataType: 'json',
+            success: function (json) {
+                response($.map(json, function (item) {
+                    return {
+                        label: item['name'],
+                        value: item['category_id']
+                    }
+                }));
+            }
+        });
+    },
+    'select': function (item) {
+        $('#input-newcategory').val('');
+        $('#customer-category-' + item['value']).remove();
+
+        html = '<tr id="customer-category-' + item['value'] + '">';
+        html += '  <td>' + item['label'] + '<input type="hidden" name="categories[]" value="' + item['value'] + '"/></td>';
+        html += '  <td class="text-end"><button type="button" class="btn btn-danger btn-sm"><i class="fas fa-minus-circle"></i></button></td>';
+        html += '</tr>';
+        $('#customer-category tbody').append(html);
+    }
+});
+$('#customer-category').on('click', '.btn', function () {
+    $(this).parent().parent().remove();
+});
+//--></script>
+{% endif %}

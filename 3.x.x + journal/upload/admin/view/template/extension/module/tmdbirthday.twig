@@ -1,0 +1,648 @@
+{{ header }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.standalone.min.css" rel="stylesheet"/>
+{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+				<button type="submit" form="form" onclick="$('#form-tmdbirth').attr('action','{{ staysave }}');$('#form-tmdbirth').submit(); " data-toggle="tooltip" title="{{ button_savestay }}" class="btn btn-primary"><i class="fa fa-save"></i> {{ button_savestay }}</button>
+        <button type="submit" form="form-tmdbirth" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {{ getkeyform }}
+  <div class="container-fluid">
+		{% if success %}
+		<div class="alert alert-success"><i class="fa fa-check-circle"></i>{{ success }}</div>
+		{% endif %}
+		{% if error_warning %}
+		<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+		{% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-tmdbirth" class="form-horizontal">
+					<ul class="nav nav-tabs">
+						<li class="active" ><a href="#tab-setting" data-toggle="tab"><i class="fa fa-cogs"></i> {{ tab_setting }}</a></li>
+						<li><a href="#tab-link" data-toggle="tab"><i class="fa fa-link"></i> {{ tab_link }}</a></li>
+						<li><a href="#tab-giftmail" data-toggle="tab"><i class="fa fa-envelope-o"></i> {{ tab_giftmail }}</a></li>
+						<li><a href="#tab-calendar" data-toggle="tab"><i class="fa fa-calendar"></i> {{ tab_calendar }}</a></li>
+						<li><a href="#tab-cronjon" data-toggle="tab"><i class="fa fa-refresh"></i> {{ tab_cronjon }}</a></li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="tab-setting">
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+								<div class="col-sm-10">
+									<label class="tmdswitch inputbundle4">
+									  <input type="checkbox" value="1" name="module_tmdbirthday_status" {% if module_tmdbirthday_status %} checked="checked" {% endif %}>
+									  <span class="tmdslider round"></span>
+									  <span class="tmdabsolute-no">{{ text_no }}</span>
+									</label>
+								</div>
+							</div>
+					
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-coupon">{{ entry_code }}</label>
+								<div class="col-sm-10">
+									<div class="input-group">
+										<input type="text" name="module_tmdbirthday_coupons" readonly value="{{ module_tmdbirthday_coupons }}" placeholder="{{ entry_code }}" id="input-coupon" class="form-control" />
+										<span class="input-group-btn">
+		                <button type="button" id="gettokens" data-loading-text="{{ text_loading }}" class="btn btn-info"><i class="fa fa-ticket"></i> {{ entry_code }}</button>
+		                </span>
+									</div>
+								</div>
+							</div>
+						
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-valid">{{ entry_date }}</label>
+								<div class="col-sm-10">
+								  <div class="row">
+									<div class="col-sm-6">
+										<div class="input-group date">
+											<input type="text" name="module_tmdbirthday_start" value="{{ module_tmdbirthday_start }}" data-date-format="YYYY-MM-DD" placeholder="{{ entry_start }}" id="input-start" class="form-control" />
+											<div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="input-group date1">
+											<input type="text" name="module_tmdbirthday_end" value="{{ module_tmdbirthday_end }}" data-date-format="YYYY-MM-DD" placeholder="{{ entry_end }}" id="input-end" class="form-control" />
+											<div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+										</div>
+									</div>
+								  </div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-dis_type">{{ entry_dis_type }}</label>
+								<div class="col-sm-10">
+								  <select name="module_tmdbirthday_dis_type" id="input-dis_type" class="form-control">
+									{% for type in types %}
+									{% if type.value == module_tmdbirthday_dis_type %}
+									<option value="{{ type.value }}" selected="selected">{{ type.text }}</option>
+									{% else %}
+									<option value="{{ type.value }}">{{ type.text }}</option>
+									{% endif %}
+									{% endfor %}
+								  </select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-dis_value">{{ entry_dis_value }}</label>
+								<div class="col-sm-10">
+									<input type="number" name="module_tmdbirthday_dis_value" value="{{ module_tmdbirthday_dis_value }}" placeholder="{{ entry_dis_value }}" id="input-dis_value" class="form-control" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-total">{{ entry_total }}</label>
+								<div class="col-sm-10">
+									<input type="number" name="module_tmdbirthday_total_amount" value="{{ module_tmdbirthday_total_amount }}" placeholder="{{ entry_total }}" id="input-total" class="form-control" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-use_coupon">{{ entry_use_coupon }}</label>
+								<div class="col-sm-10">
+									<input type="number" name="module_tmdbirthday_use_coupon" value="{{ module_tmdbirthday_use_coupon }}" placeholder="{{ entry_use_coupon }}" id="input-use_coupon" class="form-control" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-use_customer">{{ entry_use_customer }}</label>
+								<div class="col-sm-10">
+									<input type="number" name="module_tmdbirthday_use_customer" value="{{ module_tmdbirthday_use_customer }}" placeholder="{{ entry_use_customer }}" id="input-use_customer" class="form-control" />
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane" id="tab-link">
+							<div class="form-group">
+                <label class="col-sm-2 control-label" for="input-product"><span data-toggle="tooltip" title="{{ help_product }}">{{ entry_products }}</span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="module_tmdbirthday_product" value="" placeholder="{{ entry_products }}" id="input-product" class="form-control"/>
+                  <div id="tmdbirthday-product" class="well well-sm" style="height: 150px; overflow: auto;">
+                  	{% for tmdbirthday_productid in tmdbirthday_productids %}
+                    <div id="tmdbirthday-product{{ tmdbirthday_productid.product_id }}"><i class="fa fa-minus-circle"></i> {{ tmdbirthday_productid.name }}
+                      <input type="hidden" name="module_tmdbirthday_productids[]" value="{{ tmdbirthday_productid.product_id }}"/>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+							<div class="form-group">
+                <label class="col-sm-2 control-label" for="input-categories"><span data-toggle="tooltip" title="{{ help_category }}">{{ entry_categories }}</span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="module_tmdbirthday_category" value="" placeholder="{{ entry_categories }}" id="input-categories" class="form-control"/>
+                  <div id="tmdbirthday-category" class="well well-sm" style="height: 150px; overflow: auto;">
+                  	{% for tmdbirthday_category in tmdbirthday_categoryids %}
+                    <div id="tmdbirthday-category{{ tmdbirthday_category.category_id }}"><i class="fa fa-minus-circle"></i> {{ tmdbirthday_category.name }}
+                      <input type="hidden" name="module_tmdbirthday_categoryids[]" value="{{ tmdbirthday_category.category_id }}"/>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+						</div>
+
+						<div class="tab-pane" id="tab-giftmail">
+							<ul class="nav nav-tabs" id="language">
+                {% for language in languages %}
+                <li><a href="#language{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /> {{ language.name }}</a></li>
+                {% endfor %}
+              </ul>
+              <div class="tab-content">
+              	{% for language in languages %}
+                <div class="tab-pane" id="language{{ language.language_id }}">
+									<div class="form-group">
+										<label class="col-sm-2 control-label" for="input-subject{{ language.language_id }}">{{ entry_subject }}</label>
+										<div class="col-sm-10">
+										  <input type="text" name="module_tmdbirthday_language[{{ language.language_id }}][subject]" value="{{ module_tmdbirthday_language[language.language_id] ? module_tmdbirthday_language[language.language_id].subject }}" id="input-subject{{ language.language_id }}" placeholder="{{ entry_subject }}" class="form-control"/>
+										</div>
+									</div>	
+									<div class="form-group">
+										<label class="col-sm-2 control-label" for="input-message{{ language.language_id }}">{{ entry_message }}</label>
+										<div class="col-sm-10">
+										  <textarea type="text" name="module_tmdbirthday_language[{{ language.language_id }}][message]" data-toggle="summernote" data-lang="{{ summernote }}" id="input-message{{ language.language_id }}" placeholder="{{ entry_message }}" class="form-control">{{ module_tmdbirthday_language[language.language_id] ? module_tmdbirthday_language[language.language_id].message }}</textarea>
+											<span style="color:#23A8DA;"><b>Shortcuts : {customer} {coupon_code} {discount_value} {total_amount} {end_date} {store_name}</b></span>
+										</div>
+									</div>
+									<legend>{{ text_extra_language }}</legend>
+									<div class="form-group">
+										<label class="col-sm-2 control-label" for="input-title{{ language.language_id }}">{{ entry_title }}</label>
+										<div class="col-sm-10">
+										  <input type="text" name="module_tmdbirthday_language[{{ language.language_id }}][title]" value="{{ module_tmdbirthday_language[language.language_id] ? module_tmdbirthday_language[language.language_id].title }}" id="input-title{{ language.language_id }}" placeholder="{{ entry_title }}" class="form-control"/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label" for="input-date-of-birth{{ language.language_id }}">{{ entry_date_of_birth }}</label>
+										<div class="col-sm-10">
+										  <input type="text" name="module_tmdbirthday_language[{{ language.language_id }}][date_of_birth]" value="{{ module_tmdbirthday_language[language.language_id] ? module_tmdbirthday_language[language.language_id].date_of_birth }}" id="input-date-of-birth{{ language.language_id }}" placeholder="{{ entry_date_of_birth }}" class="form-control"/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label" for="input-dob-necessarytext{{ language.language_id }}">{{ entry_dob_necessarytext }}</label>
+										<div class="col-sm-10">
+										  <input type="text" name="module_tmdbirthday_language[{{ language.language_id }}][dob_necessarytext]" value="{{ module_tmdbirthday_language[language.language_id] ? module_tmdbirthday_language[language.language_id].dob_necessarytext }}" id="input-dob-necessarytext{{ language.language_id }}" placeholder="{{ entry_dob_necessarytext }}" class="form-control"/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label" for="input-error-date-of-birth{{ language.language_id }}">{{ entry_error_date_of_birth }}</label>
+										<div class="col-sm-10">
+										  <input type="text" name="module_tmdbirthday_language[{{ language.language_id }}][error_date_of_birth]" value="{{ module_tmdbirthday_language[language.language_id] ? module_tmdbirthday_language[language.language_id].error_date_of_birth }}" id="input-error-date-of-birth{{ language.language_id }}" placeholder="{{ entry_error_date_of_birth }}" class="form-control"/>
+										</div>
+									</div>
+								</div>
+								{% endfor %}
+							</div>
+						</div>
+				
+						<div class="tab-pane" id="tab-calendar">
+							{% if module_status == 1 %}
+							<div class="panel panel-default">
+				      	<div class="panel-heading">
+				        	<h3 class="panel-title"><i class="fa fa-list"></i> {{ text_heading }}</h3>
+				      	</div>
+						    <div class="panel-body">
+									<div class="table-responsive">
+										<table class="table table-bordered table-hover">
+										  <thead>
+												<tr>
+													<td style="width: 1px;" class="text-center bgc1"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+													<td class="text-left bgc1">{{ column_apply }}</td>
+													<td class="text-left bgc1">{{ column_name }}</td>
+													<td class="text-left bgc1">{{ column_email }}</td>
+													<td class="text-left bgc1">{{ column_dob }}</td>
+													<td class="text-left bgc1">{{ column_group }}</td>
+													<td class="text-left bgc1">{{ column_status }}</td>
+													<td class="text-left bgc1">{{ column_date }}</td>
+													<td class="text-right bgc1">{{ column_action }}</td>
+												</tr>
+										  </thead>
+										  <tbody class="allcustomers">
+										  </tbody>
+										</table>
+									</div>
+									
+								</div>
+							</div>
+							{{ tmdcalender }}
+							{% else %}
+							<div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ error_couponinfo }}</div>
+							{% endif %}
+						</div>
+
+						<div class="tab-pane" id="tab-cronjon">
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-status">{{ entry_cronstatus }}</label>
+								<div class="col-sm-10">
+								  <select name="module_tmdbirthday_cronjobstatus" id="input-status" class="form-control">
+										{% if module_tmdbirthday_cronjobstatus %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %}
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+								  </select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-tmdcron_sendemaildays"><span data-toggle="tooltip">{{ entry_sendemaildays }}</span></label>
+								<div class="col-sm-10">
+								  <input type="text" name="module_tmdbirthday_sendemaildays" value="{{ module_tmdbirthday_sendemaildays }}" placeholder="" id="input-tmdcron_sendemaildays" class="form-control" />
+								</div>
+							</div>
+
+							{% if module_tmdbirthday_cronjobstatus==1 %}
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-path">{{ entry_cron }}</label>
+								<div class="col-sm-10">
+									<div class="input-group">
+									  <input type="text" readonly value="{{ cronjobstatus }}" placeholder="Share Link" rows="3" class="form-control" id="cron_url"/>
+								  	<span class="input-group-btn">
+											<button onclick="myFunction()" class="btn btn-primary copycronurl" type="button"  data-toggle="tooltip" data-original-title="Copy"><i class="fa fa-copy"></i></button>
+								  	</span>
+								  </div>
+									<div class="alert alert-info">{{ text_copy }}</div>
+							  </div>
+							</div>
+						  {% endif %}
+			  		</div>
+
+					</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="view/javascript/summernote/summernote.js"></script>
+<link href="view/javascript/summernote/summernote.css" rel="stylesheet" />
+<script type="text/javascript" src="view/javascript/summernote/summernote-image-attributes.js"></script>
+<script type="text/javascript" src="view/javascript/summernote/opencart.js"></script>
+<script>
+$('input[name^=\'multiple_selected\']').on('change', function() {
+	$('#selected-multiple-customer').prop('disabled', true);
+
+	var selected = $('input[name^=\'multiple_selected\']:checked');
+		alert(selected);
+	if (selected.length) {
+		$('#selected-multiple-customer').prop('disabled', false);
+	}
+});
+$('#selected-multiple-customer').prop('disabled', true);
+
+$('#language a:first').tab('show');
+function myFunction() {
+  var copyText = document.getElementById("cron_url");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+}
+</script>
+<script type="text/javascript"><!--
+$('.date').datetimepicker({
+	language: '{{ datepicker }}',
+	pickTime: false
+});
+$('.date1').datetimepicker({
+	language: '{{ datepicker }}',
+	pickTime: false
+});
+//--></script>
+
+<div class="modal" id="myModal" role="dialog" aria-labelledby="myModal" aria-hidden="true"></div>
+<script>
+$(document).on('click','.tmdcustomer',function(e) {
+  $('#myModal .modal-dialog').html('<div class="loader-if centered"></div>');
+  $('#myModal').load($(this).attr('href'));
+});
+</script>
+
+<script type="text/javascript"><!--
+$(document).on('click','.tmdgiftadd',function() {
+  var email = $('input[name=\'email\']').val();
+  var date_of_birth = $('input[name=\'date_of_birth\']').val();
+  var code = $('input[name=\'code\']').val();
+  var date_start = $('input[name=\'date_start\']').val();
+  var date_end = $('input[name=\'date_end\']').val();
+  var dis_type = $('select[name=\'dis_type\']').val();
+  var dis_value = $('input[name=\'dis_value\']').val();
+  var total_amount = $('input[name=\'total_amount\']').val();
+  var use_coupon = $('input[name=\'use_coupon\']').val();
+  var use_customer = $('input[name=\'use_customer\']').val();
+
+  var products = $('input[name="products[]"]').map(function() {
+    return $(this).val();
+  }).get();
+
+  var categories = $('input[name="categories[]"]').map(function() {
+    return $(this).val();
+  }).get();
+
+	var data = [];
+	data.push('email='+email+'&date_of_birth='+date_of_birth+'&code='+code+'&date_start='+date_start+'&date_end='+date_end+'&dis_type='+dis_type+'&dis_value='+dis_value+'&total_amount='+total_amount+'&use_coupon='+use_coupon+'&use_customer='+use_customer+'&products='+products+'&categories='+categories);
+  var rel = $(this).attr('rel');
+  $.ajax({
+    url: 'index.php?route=extension/module/tmdbirthday/addgift&user_token={{ user_token }}&customer_id='+rel,
+    type: 'post',
+    data: data.join('&'),
+    dataType: 'json',
+    beforeSend: function() {
+			$('.tmdgiftadd').button('loading');
+		},
+		complete: function() {
+			$('.tmdgiftadd').button('reset');
+		},
+    success: function(json) {
+      $('.alert, .text-danger').remove();
+      $('.form-group').removeClass('has-error');
+
+			if (json['error']) {
+				if (json['error']['error_date_start']) {
+					if ($('#input-date_start').parent().hasClass('input-group')) {
+            $('#input-date_start').parent().after('<div class="text-danger">' + json['error']['error_date_start'] + '</div>');
+          } else {
+            $('#input-date_start').after('<div class="text-danger">' + json['error']['error_date_start'] + '</div>');
+          }
+          $('.text-danger').parentsUntil('.form-group').parent().addClass('has-error');
+				}
+
+				if (json['error']['error_date_end']) {
+					if ($('#input-date_end').parent().hasClass('input-group')) {
+            $('#input-date_end').parent().after('<div class="text-danger">' + json['error']['error_date_end'] + '</div>');
+          } else {
+            $('#input-date_end').after('<div class="text-danger">' + json['error']['error_date_end'] + '</div>');
+          }
+          $('.text-danger').parentsUntil('.form-group').parent().addClass('has-error');
+				}
+
+				if (json['error']['error_dis_val']) {
+					if ($('#input-discount-value').parent().hasClass('input-group')) {
+            $('#input-discount-value').parent().after('<div class="text-danger">' + json['error']['error_dis_val'] + '</div>');
+          } else {
+            $('#input-discount-value').after('<div class="text-danger">' + json['error']['error_dis_val'] + '</div>');
+          }
+          $('.text-danger').parentsUntil('.form-group').parent().addClass('has-error');
+				}
+
+				if (json['error']['error_total']) {
+					if ($('#input-coupon-total').parent().hasClass('input-group')) {
+            $('#input-coupon-total').parent().after('<div class="text-danger">' + json['error']['error_total'] + '</div>');
+          } else {
+            $('#input-coupon-total').after('<div class="text-danger">' + json['error']['error_total'] + '</div>');
+          }
+          $('.text-danger').parentsUntil('.form-group').parent().addClass('has-error');
+				}
+
+				if (json['error']['error_coupon_exit']) {
+					$('.tmd-alert').after('<div class="alert alert-danger alert-dismissible">' + json['error']['error_coupon_exit'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+					
+					if (json['error']['error_start_date']) {
+						if ($('#input-date_start').parent().hasClass('input-group')) {
+	            $('#input-date_start').parent().after('<div class="text-danger">' + json['error']['error_start_date'] + '</div>');
+	          } else {
+	            $('#input-date_start').after('<div class="text-danger">' + json['error']['error_start_date'] + '</div>');
+	          }
+	          $('.text-danger').parentsUntil('.form-group').parent().addClass('has-error');
+					}
+
+					if (json['error']['error_end_date']) {
+						if ($('#input-date_end').parent().hasClass('input-group')) {
+	            $('#input-date_end').parent().after('<div class="text-danger">' + json['error']['error_end_date'] + '</div>');
+	          } else {
+	            $('#input-date_end').after('<div class="text-danger">' + json['error']['error_end_date'] + '</div>');
+	          }
+	          $('.text-danger').parentsUntil('.form-group').parent().addClass('has-error');
+					}
+				}
+			}
+			if (json['success']) {
+				$('#myModal').modal('hide');
+				$('.breadcrumb').after('<div class="alert alert-success alert-dismissible">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+			}
+    },
+  });
+});
+//--></script>
+
+<script type="text/javascript">
+$(document).on('click','#gettokens',function() {
+  $.ajax({
+    url: 'index.php?route=extension/module/tmdbirthday/generateCoupon&user_token={{ user_token }}',
+    type: 'post',
+    data: '',
+    dataType: 'json',
+    beforeSend: function() {
+    	$('#gettokens').button('loading');
+    },
+    complete: function() {
+    	$('#gettokens').button('reset');
+    },
+    success: function(json) {
+      if (json['success']) {
+        $('#input-coupon').val(json['code']);
+      }
+    },
+  });
+});
+
+// Products
+$('input[name=\'module_tmdbirthday_product\']').autocomplete({
+  'source': function(request, response) {
+	  $.ajax({
+		  url: 'index.php?route=catalog/product/autocomplete&user_token={{ user_token }}&filter_name=' + encodeURIComponent(request),
+		  dataType: 'json',
+		  success: function(json) {
+			  response($.map(json, function(item) {
+				  return {
+					  label: item['name'],
+					  value: item['product_id']
+				  }
+			  }));
+		  }
+	  });
+  },
+  'select': function(item) {
+	  $('input[name=\'module_tmdbirthday_product\']').val('');
+	  $('#tmdbirthday-product' + item['value']).remove();
+	  $('#tmdbirthday-product').append('<div id="tmdbirthday-product' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="module_tmdbirthday_productids[]" value="' + item['value'] + '" /></div>');
+  }
+});
+$('#tmdbirthday-product').delegate('.fa-minus-circle', 'click', function() {
+  $(this).parent().remove();
+});
+
+// Category
+$('input[name=\'module_tmdbirthday_category\']').autocomplete({
+  'source': function(request, response) {
+	  $.ajax({
+		  url: 'index.php?route=catalog/category/autocomplete&user_token={{ user_token }}&filter_name=' + encodeURIComponent(request),
+		  dataType: 'json',
+		  success: function(json) {
+			  response($.map(json, function(item) {
+				  return {
+					  label: item['name'],
+					  value: item['category_id']
+				  }
+			  }));
+		  }
+	  });
+  },
+  'select': function(item) {
+	  $('input[name=\'module_tmdbirthday_category\']').val('');
+	  $('#tmdbirthday-category' + item['value']).remove();
+	  $('#tmdbirthday-category').append('<div id="tmdbirthday-category' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="module_tmdbirthday_categoryids[]" value="' + item['value'] + '" /></div>');
+  }
+});
+$('#tmdbirthday-category').delegate('.fa-minus-circle', 'click', function() {
+  $(this).parent().remove();
+});
+</script>
+
+<style>
+.bgc1{background: #48c0f0;color: #fff;padding: 12px;}
+</style>
+
+<style>
+.tmdminicolors-theme-bootstrap .tmdminicolors-input{
+	width:100%;
+	height:35px;
+}
+.tmdcomponent td:first-child{
+	cursor:move; 
+}
+.tmdquickbtn-success {
+	color: #fff;
+	background-color: #afafaf;
+	border-color: #afafaf;
+}
+.tmdquickbtn-success:hover,.tmdquickbtn-success:active:hover, .tmdquickbtn-success.active:hover, .open > .tmdquickbtn-success.dropdown-toggle:hover, .tmdquickbtn-success:active:focus, .tmdquickbtn-success.active:focus, .open > .tmdquickbtn-success.dropdown-toggle:focus, .tmdquickbtn-success:active.focus, .tmdquickbtn-success.active.focus, .open > .tmdquickbtn-success.dropdown-toggle.focus, .tmdquickbtn-success:active, .tmdquickbtn-success.active, .open > .tmdquickbtn-success.dropdown-toggle{
+	background-color:#33ccff;
+	border-color:#33ccff;
+}
+.tmdswitch {
+  position: relative;
+  display: inline-block;
+  width: 95px;
+  height: 30px;
+}
+
+.tmdswitch input {display:none;}
+
+.tmdslider {
+  position: absolute;
+  cursor: pointer;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #f2f2f2;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.tmdslider:before {
+  position: absolute;
+  z-index: 2;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  bottom: 4px;
+  background-color: #2aabd2;
+      -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.22);
+  -webkit-transition: .4s;
+  transition: all 0.4s ease-in-out;
+}
+.tmdslider:after {
+  position: absolute;
+  left: 0;
+  z-index: 1;
+  content: "YES";
+    font-size: 14px;
+    text-align: left !important;
+    line-height: 30px;
+	padding-left: 0;
+    width: 95px;
+    color: #fff;
+    height: 30px;
+    border-radius: 100px;
+    background-color: #2aabd2;
+    -webkit-transform: translateX(-160px);
+    -ms-transform: translateX(-160px);
+    transform: translateX(-160px);
+    transition: all 0.4s ease-in-out;
+}
+
+input:checked + .tmdslider:after {
+  -webkit-transform: translateX(0px);
+  -ms-transform: translateX(0px);
+  transform: translateX(0px);
+  /*width: 235px;*/
+  padding-left: 15px;
+}
+
+input:checked + .tmdslider:before {
+  background-color: #fff;
+}
+
+input:checked + .tmdslider:before {
+  -webkit-transform: translateX(63px);
+  -ms-transform: translateX(63px);
+  transform: translateX(63px);
+}
+
+/* Rounded arsliders */
+.tmdslider.round {
+  border-radius: 100px;
+}
+
+.tmdslider.round:before {
+  border-radius: 50%;
+}
+.tmdabsolute-no {
+position: absolute;
+left: 0;
+color: #2aabd2;
+text-align: right !important;
+font-size: 14px;
+width: calc(100% - 15px);
+height: 30px;
+line-height: 30px;
+cursor: pointer;
+} 
+
+#form-tmdbirth ul li.active > a,#form-tmdbirth ul li.active > a:hover,#form-tmdbirth ul li.active > a:focus{
+	background: #00a4e4 none repeat scroll 0 0 !important;
+	color:#fff;
+}
+#form-tmdbirth .nav-tabs li a{
+	background:#E4E6EA;
+}
+#form-tmdbirth .nav-tabs > li.active > a, #form-tmdbirth .nav-tabs > li.active > a:hover,#form-tmdbirth .nav-tabs > li.active > a:focus{
+	color:#fff;
+}
+
+.datepicker table tr td.active.disabled.active{
+	/*background:red none repeat scroll 0 0 !important;*/
+	background:#fff;
+	color:#999;
+}
+.datepicker table tr td.active.disabled:hover.active, .datepicker table tr td.active.disabled:hover.disabled, .datepicker table tr td.active.disabled:hover:active, .datepicker table tr td.active.disabled:hover:hover, .datepicker table tr td.active.disabled:hover[disabled], .datepicker table tr td.active.disabled[disabled],.datepicker table tr td.active:hover.disabled,.datepicker table tr td.active:hover[disabled], .datepicker table tr td.active[disabled] {
+	background:#fff;
+
+}
+</style>
+{{ footer }}

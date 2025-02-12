@@ -1,0 +1,131 @@
+<div class="modal-dialog modal-lg">
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">{{ text_reminder }}{{ name }}</h3>
+    </div>
+    <div class="modal-body">
+		<div class="tmd-alert"></div>
+		<form action="{{ action1 }}" method="post" enctype="multipart/form-data" id="form-managepro" class="form-horizontal giftnow{{ customer_id }}">
+			<div class="well">
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label class="control-label" for="input-mail">{{ entry_to_mail }}</label>
+							<input type="text" name="email" value="{{ email }}" readonly placeholder="{{ entry_to_mail }}" id="input-mail" class="form-control" />
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label class="control-label" for="input-dob">{{ entry_dob }}</label>
+							<input type="text" name="date_of_birth" value="{{ date_of_birth }}" readonly placeholder="{{ entry_dob }}" id="input-dob" class="form-control" />
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label class="control-label" for="input-code">{{ entry_code }}</label>
+							<input type="text" name="code" value="{{ code }}" readonly placeholder="{{ entry_code }}" id="input-code" class="form-control" />
+						</div>
+					</div>
+
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="input-date_start">{{ entry_date_start }}</label>
+							<div class="input-group cdate">
+								<input type="text" name="date_start" data-date-format="YYYY-MM-DD" placeholder="{{ entry_date_start }}" id="input-date_start" class="form-control" />
+								<div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+							</div>
+							<div class="error_date_start"></div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="input-date_end">{{ entry_date_end }}</label>
+							<div class="input-group cdate1">
+								<input type="text" name="date_end" data-date-format="YYYY-MM-DD" placeholder="{{ entry_date_end }}" id="input-date_end" class="form-control" />
+								<div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+							</div>
+							<div class="error_date_end"></div>
+						</div>
+					</div>
+					
+					<div class="col-sm-4">
+						<div class="form-group">
+						<label class="control-label" for="input-dis_type">{{ entry_dis_type }}</label>
+						  <select name="dis_type" id="input-dis_type" class="form-control">
+							{% for type in types %}
+							{% if type.value == module_tmdbirthday_dis_type %}
+							<option value="{{ type.value }}" selected="selected">{{ type.text }}</option>
+							{% else %}
+							<option value="{{ type.value }}">{{ type.text }}</option>
+							{% endif %}
+							{% endfor %}
+						  </select>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div class="form-group required">
+							<label class="control-label" for="input-dis_value">{{ entry_dis_value }}</label>
+							<input type="text" name="dis_value" value="{{ module_tmdbirthday_dis_value }}" placeholder="{{ entry_dis_value }}" id="input-dis_value" class="form-control" />
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div class="form-group required">
+							<label class="control-label" for="input-total">{{ entry_total }}</label>
+							<input type="text" name="total_amount" value="{{ module_tmdbirthday_total_amount }}" placeholder="{{ entry_total }}" id="input-total" class="form-control" />
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="input-use_coupon">{{ entry_use_coupon }}</label>
+							<input type="text" name="use_coupon" placeholder="{{ entry_use_coupon }}" id="input-use_coupon" class="form-control" />
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="input-use_customer">{{ entry_use_customer }}</label>
+							<input type="text" name="use_customer" placeholder="{{ entry_use_customer }}" id="input-use_customer" class="form-control" />
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="input-subject">{{ entry_subject }}</label>
+						<div class="col-sm-10">
+							<input type="text" name="subject" value="{{ tmdbirthday_subject }}" placeholder="{{ entry_subject }}" id="input-subject" class="form-control" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="input-message">{{ entry_message }}</label>
+						<div class="col-sm-10">
+							<textarea type="text" name="message" placeholder="{{ entry_message }}" data-toggle="summernote" data-lang="{{ summernote }}" id="input-message" class="form-control">{{ messages }}</textarea>
+						</div>
+					</div>
+
+					<div class="col-sm-8 pull-right">
+						<button type="button" data-loading-text="{{ text_loading }}" class="btn btn-info btn-lg tmdgiftadd" rel="{{ customer_id }}">{{ text_addgift }}</button>
+					</div>
+				</div>
+			</div>
+		</form>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="view/javascript/summernote/summernote.js"></script>
+<link href="view/javascript/summernote/summernote.css" rel="stylesheet" />
+<script type="text/javascript" src="view/javascript/summernote/summernote-image-attributes.js"></script>
+<script type="text/javascript" src="view/javascript/summernote/opencart.js"></script>
+<script type="text/javascript"><!--
+$('#languages a:first').tab('show');
+//--></script>
+
+<script type="text/javascript"><!--
+$('.cdate').datetimepicker({
+	language: '{{ datepicker }}',
+	pickTime: false
+});
+$('.cdate1').datetimepicker({
+	language: '{{ datepicker }}',
+	pickTime: false
+});
+//--></script>

@@ -1,0 +1,629 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>TMD Birth Day Reminder</name>
+  <code>TMD Birth Day Reminder</code>
+  <version>3.x.x</version>
+<author>TMD(opencartextensions.in)</author>
+<link>http://opencartextensions.in/</link>
+  
+<file path="admin/controller/common/column_left.php">
+	<operation>
+      <search><![CDATA[// Extension]]></search>
+      <add position="before">
+        <![CDATA[
+		/* date of birth */
+		$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+		 if($tmdbirthday_status) {
+			if ($this->user->hasPermission('access', 'extension/module/tmdbirthday')) {		
+				$data['menus'][] = array(
+					'id'       => 'menu-tmdbirthday',
+					'icon'	   => 'fa-birthday-cake',
+					'name'	   => $this->language->get('text_tmdbirthday'),
+					'href'     => $this->url->link('extension/module/tmdbirthday', 'user_token=' . $this->session->data['user_token'], true),
+					'children' => array()
+				);		
+			}
+		}	
+		/* date of birth */
+		]]>
+      </add>
+    </operation>
+</file>
+
+<file path="admin/language/*/common/column_left.php">
+	<operation>
+	<search><![CDATA[// Text]]></search>
+	<add position="after">
+		<![CDATA[
+		/* date of birth */
+		$_['text_tmdbirthday']            = 'TMD Birthday Reminder';
+		/* date of birth */
+	]]></add>
+	</operation>
+</file>
+  
+<file path="admin/controller/customer/customer.php">
+	<operation>
+		<search><![CDATA[if (isset($this->error['cheque'])) {]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+			$data['tmdbirthday_status'] 		= $this->config->get('module_tmdbirthday_status');
+			$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+		  if($tmdbirthday_status) {
+				if (isset($this->error['date_of_birth'])) {
+					$data['error_date_of_birth'] = $this->error['date_of_birth'];
+				} else {
+					$data['error_date_of_birth'] = '';
+				}
+			}
+			/* date of birth */
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[if (isset($this->request->post['telephone'])) {]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+			$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+		  if($tmdbirthday_status) {
+				if (isset($this->request->post['date_of_birth'])) {
+					$data['date_of_birth'] = $this->request->post['date_of_birth'];
+				} elseif (!empty($customer_info)) {
+					$data['date_of_birth'] = $customer_info['date_of_birth'];
+				} else {
+					$data['date_of_birth'] = '';
+				}
+			}
+			/* date of birth */
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[// Custom field validation]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+			$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+		  if($tmdbirthday_status) {
+				if ($this->request->post['date_of_birth'] == '') {
+					$this->error['date_of_birth'] = $this->language->get('error_date_of_birth');
+				}
+			}
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="admin/language/*/customer/customer.php">
+	<operation>
+		<search><![CDATA[// Entry]]></search>
+		<add position="after">
+			<![CDATA[
+			/* date of birth */
+			$_['entry_birthday']            = 'Date Of Birth';
+			$_['error_date_of_birth']       = 'Please select a date of birth!';
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="admin/model/customer/customer.php">
+	<operation>
+		<search><![CDATA[if ($data['password']) {]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+			$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+		  if($tmdbirthday_status) {
+				if (isset($data['date_of_birth'])) {
+					$this->db->query("UPDATE " . DB_PREFIX . "customer SET date_of_birth = '" . $data['date_of_birth'] . "' WHERE customer_id = '" . (int)$customer_id . "'");
+				}
+			}
+			/* date of birth */
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[$customer_id = $this->db->getLastId();]]></search>
+		<add position="after">
+			<![CDATA[
+			/* date of birth */
+			$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+		  if($tmdbirthday_status) {
+				if (isset($data['date_of_birth'])) {
+					$this->db->query("UPDATE " . DB_PREFIX . "customer SET date_of_birth = '" . $data['date_of_birth'] . "' WHERE customer_id = '" . (int)$customer_id . "'");
+				}
+			}
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="admin/view/template/customer/customer_form.twig">
+	<operation>
+		<search index="0"><![CDATA[{% for custom_field in custom_fields %}]]></search>
+		<add position="before">
+			<![CDATA[
+			<!-- date of birth -->
+			{% if(tmdbirthday_status) %}
+				<div class="form-group required">
+				  <label class="col-sm-2 control-label" for="input-birthday">{{ entry_birthday }}</label>
+				  <div class="col-sm-10">
+					<div class="input-group tmddate">
+						<input type="text" name="date_of_birth" value="{{ date_of_birth }}" data-date-format="YYYY-MM-DD" placeholder="YYYY-MM-DD" id="input-birthday" class="form-control" />
+						<div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+					</div>
+					{% if error_date_of_birth %}
+					<div class="text-danger">{{ error_date_of_birth }}</div>
+					{% endif %}</div>
+				</div>
+			{% endif %}
+			<!-- date of birth -->
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[$('input[name="affiliate"]').on('change', function() {]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+				$('.tmddate').datetimepicker({
+					language: '{{ datepicker }}',
+					pickTime: false
+				});
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/controller/account/register.php">
+	<operation>
+		<search><![CDATA[if (isset($this->error['custom_field'])) {]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+			$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+			if($tmdbirthday_status) {
+				if (isset($this->error['date_of_birth'])) {
+					$data['error_date_of_birth'] = $this->error['date_of_birth'];
+				} else {
+					$data['error_date_of_birth'] = '';
+				}
+			}
+			/* date of birth */
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[// Custom Fields]]></search>
+		<add position="before">
+			<![CDATA[
+			$this->load->language('extension/tmdbirthday');
+			$data['tmdbirthday_status']	= $this->config->get('module_tmdbirthday_status');
+			$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+			/* date of birth */
+			if($tmdbirthday_status) {
+				$tmdbirthday_language = $this->config->get('module_tmdbirthday_language');
+				if(!empty($tmdbirthday_language[$this->config->get('config_language_id')]['date_of_birth'])) {
+					$data['entry_birthday'] = $tmdbirthday_language[$this->config->get('config_language_id')]['date_of_birth'];
+				} else {
+					$data['entry_birthday'] = $this->language->get('entry_birthday');
+				}
+				if(!empty($tmdbirthday_language[$this->config->get('config_language_id')]['dob_necessarytext'])) {
+					$data['error_it_is_necessary'] = $tmdbirthday_language[$this->config->get('config_language_id')]['dob_necessarytext'];
+				} else {
+					$data['error_it_is_necessary'] = $this->language->get('error_it_is_necessary');
+				}
+				if (isset($this->request->post['date_of_birth'])) {
+					$data['date_of_birth'] = $this->request->post['date_of_birth'];
+				} else {
+					$data['date_of_birth'] = '';
+				}
+		  }
+			/* date of birth */
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[// Custom field validation]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+			$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+			if($tmdbirthday_status) {
+				$tmdbirthday_language = $this->config->get('module_tmdbirthday_language');
+				if(!empty($tmdbirthday_language[$this->config->get('config_language_id')]['error_date_of_birth'])) {
+					$error_date_of_birth = $tmdbirthday_language[$this->config->get('config_language_id')]['error_date_of_birth'];
+				} else {
+					$error_date_of_birth = $this->language->get('error_date_of_birth');
+				}
+				if ($this->request->post['date_of_birth'] == '') {
+					$this->error['date_of_birth'] = $error_date_of_birth;
+				}
+			}
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/language/*/account/register.php">
+	<operation>
+		<search><![CDATA[// Entry]]></search>
+		<add position="after">
+			<![CDATA[
+			/* date of birth */
+			$_['entry_birthday']            = 'Date Of Birth';
+			$_['error_date_of_birth']       = 'Please select a date of birth!';
+			$_['error_it_is_necessary']     = 'It is necessary to enter the date of birth correctly in the field (YYYY-MM-DD)';
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/model/account/customer.php">
+	<operation>
+		<search><![CDATA[public function editCustomer($customer_id, $data) {]]></search>
+		<add position="after">
+			<![CDATA[
+			/* date of birth */
+			$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+		  if($tmdbirthday_status) {
+				if (isset($data['date_of_birth'])) {
+					$this->db->query("UPDATE " . DB_PREFIX . "customer SET date_of_birth = '" . $data['date_of_birth'] . "' WHERE customer_id = '" . (int)$customer_id . "'");
+				}
+			}
+			/* date of birth */
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[$customer_id = $this->db->getLastId();]]></search>
+		<add position="after">
+			<![CDATA[
+			/* date of birth */
+			$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+		 	if($tmdbirthday_status) {
+				if (isset($data['date_of_birth'])) {
+					$this->db->query("UPDATE " . DB_PREFIX . "customer SET date_of_birth = '" . $data['date_of_birth'] . "' WHERE customer_id = '" . (int)$customer_id . "'");
+				}
+			}
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+<file path="catalog/view/theme/journal3/template/account/register.twig">
+	<operation>
+		<search><![CDATA[{% for custom_field in custom_fields %}]]></search>
+		<add position="before">
+			<![CDATA[
+			<!-- date of birth -->
+			{% if(tmdbirthday_status) %}
+				<div class="form-group required">
+				  <label class="col-sm-2 control-label" for="input-birthday">{{ entry_birthday }}</label>
+				  <div class="col-sm-10">
+					<div class="input-group date tmdbday">
+						<input type="text" name="date_of_birth" value="{{ date_of_birth }}" data-date-format="YYYY-MM-DD" placeholder="YYYY-MM-DD" id="input-birthday" class="form-control" />
+						<span class="input-group-btn">
+						  <button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
+						</span></div>
+					<div class="pull-right">
+						<i>{{ error_it_is_necessary }}</i>
+					</div>
+					{% if error_date_of_birth %}
+					<div class="text-danger">{{ error_date_of_birth }}</div>
+					{% endif %}</div>
+				</div>
+			{% endif %}
+			<style>
+			.tmdbday {
+				width: 100%;
+			}
+			</style>
+			<!-- date of birth -->
+		]]></add>
+	</operation>
+</file>
+<file path="catalog/view/theme/*/template/account/register.twig">
+	<operation>
+		<search><![CDATA[{% for custom_field in custom_fields %}]]></search>
+		<add position="before">
+			<![CDATA[
+			<!-- date of birth -->
+			{% if(tmdbirthday_status) %}
+				<div class="form-group required">
+				  <label class="col-sm-2 control-label" for="input-birthday">{{ entry_birthday }}</label>
+				  <div class="col-sm-10">
+				  	<div class="input-group date tmdbday">
+							<input type="text" name="date_of_birth" value="{{ date_of_birth }}" data-date-format="YYYY-MM-DD" placeholder="YYYY-MM-DD" id="input-birthday" class="form-control" />
+							<div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+						</div>
+					<div class="pull-right">
+						<i>{{ error_it_is_necessary }}</i>
+					</div>
+					{% if error_date_of_birth %}
+					<div class="text-danger">{{ error_date_of_birth }}</div>
+					{% endif %}</div>
+				</div>
+			{% endif %}
+			<style>
+			.tmdbday {
+				display: table !important;
+			}
+			</style>
+			<!-- date of birth -->
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/controller/checkout/register.php">
+	<operation>
+		<search><![CDATA[// Custom Fields]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+			$this->load->language('extension/tmdbirthday');
+			$data['tmdbirthday_status']	= $this->config->get('module_tmdbirthday_status');
+			$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+		 	if($tmdbirthday_status) { 
+		 		$tmdbirthday_language = $this->config->get('module_tmdbirthday_language');
+				if(!empty($tmdbirthday_language[$this->config->get('config_language_id')]['date_of_birth'])) {
+					$data['entry_birthday'] = $tmdbirthday_language[$this->config->get('config_language_id')]['date_of_birth'];
+				} else {
+					$data['entry_birthday'] = $this->language->get('entry_birthday');
+				}
+				if(!empty($tmdbirthday_language[$this->config->get('config_language_id')]['dob_necessarytext'])) {
+					$data['error_it_is_necessary'] = $tmdbirthday_language[$this->config->get('config_language_id')]['dob_necessarytext'];
+				} else {
+					$data['error_it_is_necessary'] = $this->language->get('error_it_is_necessary');
+				}
+
+				if (isset($this->request->post['date_of_birth'])) {
+					$data['date_of_birth'] = $this->request->post['date_of_birth'];
+				} else {
+					$data['date_of_birth'] = '';
+				}
+			/* date of birth */
+		  }
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[// Custom field validation]]></search>
+		<add position="before">
+			<![CDATA[
+			$this->load->language('extension/tmdbirthday');
+			$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+			/* date of birth */
+			if($tmdbirthday_status) {
+				$tmdbirthday_language = $this->config->get('module_tmdbirthday_language');
+				if(!empty($tmdbirthday_language[$this->config->get('config_language_id')]['error_date_of_birth'])) {
+					$error_date_of_birth = $tmdbirthday_language[$this->config->get('config_language_id')]['error_date_of_birth'];
+				} else {
+					$error_date_of_birth = $this->language->get('error_date_of_birth');
+				}
+				if ($this->request->post['date_of_birth'] == '') {
+					$json['error']['birthday'] = $error_date_of_birth;
+				}
+			}
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/view/theme/*/template/checkout/register.twig">
+	<operation>
+		<search><![CDATA[<input type="text" name="telephone" value="" placeholder="{{ entry_telephone }}" id="input-payment-telephone" class="form-control" />]]></search>
+		<add position="after" offset="1">
+			<![CDATA[
+			<!-- date of birth -->
+			{% if(tmdbirthday_status) %}
+				<div class="form-group required">
+				  <label class="control-label" for="input-payment-birthday">{{ entry_birthday }}</label>
+				  
+					<div class="input-group date tmdbday">
+						<input type="text" name="date_of_birth" value="{{ date_of_birth }}" data-date-format="YYYY-MM-DD" placeholder="YYYY-MM-DD" id="input-payment-birthday" class="form-control" />
+						<div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+					</div>
+				<div class="col-sm-12" style="padding:0px;">
+					<div class="pull-right">
+						<i>{{ error_it_is_necessary}}</i>
+					</div>
+				</div>
+				</div>
+			{% endif %}
+			<style>
+			.tmdbday {
+				display: table !important;
+			}
+			.route-checkout-checkout #content .tmdbday input.form-control{
+				width: 100%;
+			}
+			</style>
+			<!-- date of birth -->
+		]]></add>
+	</operation>
+</file>
+
+<!--Journal3 quick checkout DOB Work start-->
+<file path="catalog/controller/journal3/checkout.php">
+	<operation>
+		<search><![CDATA[$data['register_block'] = $this->load->view('journal3/checkout/register', array(]]></search>
+		<add position="before"><![CDATA[
+			/* date of birth */
+			$this->load->language('extension/tmdbirthday');
+			$data['tmdbirthday_status']	= $this->config->get('module_tmdbirthday_status');
+			$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+			
+			if($tmdbirthday_status) {
+				$tmdbirthday_language = $this->config->get('module_tmdbirthday_language');
+				if(!empty($tmdbirthday_language[$this->config->get('config_language_id')]['date_of_birth'])) {
+					$data['entry_date_of_birth'] = $tmdbirthday_language[$this->config->get('config_language_id')]['date_of_birth'];
+				} else {
+					$data['entry_date_of_birth'] = $this->language->get('entry_birthday');
+				}
+				if(!empty($tmdbirthday_language[$this->config->get('config_language_id')]['dob_necessarytext'])) {
+					$data['error_it_is_necessary'] = $tmdbirthday_language[$this->config->get('config_language_id')]['dob_necessarytext'];
+				} else {
+					$data['error_it_is_necessary'] = $this->language->get('error_it_is_necessary');
+				}
+				if (isset($this->request->post['date_of_birth'])) {
+					$data['date_of_birth'] = $this->request->post['date_of_birth'];
+				} else {
+					$data['date_of_birth'] = '';
+				}
+		    }
+		    /* date of birth */
+		]]></add>
+	</operation>
+	<operation>
+		<search><![CDATA['customer_groups'      => $this->getCustomerGroups(),]]></search>
+		<add position="after"><![CDATA[
+		'tmdbirthday_status'   => $tmdbirthday_status,
+			'entry_date_of_birth'  => $data['entry_date_of_birth'],
+			'error_it_is_necessary'  => $data['error_it_is_necessary'],
+			'date_of_birth'  => $data['date_of_birth'],
+		]]></add>
+	</operation>
+	<operation>
+		<search><![CDATA[// telephone]]></search>
+		<add position="before"><![CDATA[
+		/* date of birth */
+		$this->load->language('extension/tmdbirthday');
+		$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+		if($tmdbirthday_status==1) {
+			if ((Arr::get($this->request->post, 'order_data.date_of_birth')) =='') {
+				$error['date_of_birth'] = $this->language->get('error_date_of_birth');
+			}
+		}
+		]]></add>
+	</operation>
+	<operation>
+		<search><![CDATA['firstname', 'lastname', 'email',]]></search>
+		<add position="replace"><![CDATA['firstname', 'lastname', 'email', 'date_of_birth',]]></add>
+	</operation>
+</file>
+
+<file path="catalog/model/journal3/checkout.php">
+	<operation>
+		<search><![CDATA[public function update() {]]></search>
+		<add position="after"><![CDATA[
+		$this->session->data['date_of_birth'] = Arr::get($this->request->post, 'order_data.date_of_birth');
+		]]></add>
+	</operation>
+	<operation>
+		<search><![CDATA[// save]]></search>
+		<add position="before"><![CDATA[
+		//DOB
+		if(!empty($this->session->data['date_of_birth'])) {
+			$data['date_of_birth'] = $this->session->data['date_of_birth'];
+		}
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/model/journal3/order.php">
+	<operation>
+		<search><![CDATA[$order_data['telephone'] = '';]]></search>
+		<add position="after"><![CDATA[
+		$order_data['date_of_birth'] = '';
+		]]></add>
+	</operation>
+	<operation>
+		<search index="2"><![CDATA[if ($this->journal3_opencart->is_oc2) {]]></search>
+		<add position="before"><![CDATA[
+		//DOB
+		if(!empty($this->session->data['date_of_birth'])) {
+			$order_data['date_of_birth'] = $this->session->data['date_of_birth'];
+		}
+		]]></add>
+	</operation>
+	<operation>
+		<search index="3"><![CDATA[if ($this->journal3_opencart->is_oc2) {]]></search>
+		<add position="before"><![CDATA[
+		//DOB
+		$order_data['date_of_birth'] = Arr::get($this->request->post, 'order_data.date_of_birth', '');
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/view/theme/journal3/template/journal3/checkout/register.twig">
+	<operation>
+		<search><![CDATA[<input v-model="order_data.telephone" type="text" name="telephone" value="" placeholder="{{ entry_telephone }}" id="input-telephone" class="form-control"/>]]></search>
+		<add position="after" offset="2">
+			<![CDATA[
+			<!-- date of birth -->
+			{% if(tmdbirthday_status) %}
+			<div class="form-group required account-date_of_birth">
+				<label class="control-label" for="input-date_of_birth">{{ entry_birthday }}</label>
+				<div class="input-group tmddate">
+				  <input v-model="order_data.date_of_birth" autocomplete="off" data-date-format="YYYY-MM-DD" type="text" name="date_of_birth" placeholder="YYYY-MM-DD" id="input-date_of_birth" class="form-control"/>
+				  <input type="hidden" name="dob" v-model="order_data.date_of_birth" class="input-dob"/>
+				  <span class="input-group-btn">
+					<button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
+				  </span>
+				</div>
+				<span class="text-danger" v-if="error && error.date_of_birth" v-html="error.date_of_birth"></span>          
+			</div>
+			{% endif %}
+			<!-- date of birth -->
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/controller/account/edit.php">
+	<operation>
+		<search><![CDATA[// Custom Fields]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+			$this->load->language('extension/tmdbirthday');
+			$data['tmdbirthday_status'] 		= $this->config->get('module_tmdbirthday_status');
+			$tmdbirthday_status 		= $this->config->get('module_tmdbirthday_status');
+		  if($tmdbirthday_status) {
+		  	$tmdbirthday_language = $this->config->get('module_tmdbirthday_language');
+				if(!empty($tmdbirthday_language[$this->config->get('config_language_id')]['date_of_birth'])) {
+					$data['entry_birthday'] = $tmdbirthday_language[$this->config->get('config_language_id')]['date_of_birth'];
+				} else {
+					$data['entry_birthday'] = $this->language->get('entry_birthday');
+				}
+				if(!empty($tmdbirthday_language[$this->config->get('config_language_id')]['dob_necessarytext'])) {
+					$data['error_it_is_necessary'] = $tmdbirthday_language[$this->config->get('config_language_id')]['dob_necessarytext'];
+				} else {
+					$data['error_it_is_necessary'] = $this->language->get('error_it_is_necessary');
+				}
+
+				if (isset($this->request->post['date_of_birth'])) {
+					$data['date_of_birth'] = $this->request->post['date_of_birth'];
+				} elseif (!empty($customer_info)) {
+					$data['date_of_birth'] = $customer_info['date_of_birth'];
+				} else {
+					$data['date_of_birth'] = '';
+				}
+			}
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/view/theme/*/template/account/edit.twig">
+	<operation>
+		<search><![CDATA[{% for custom_field in custom_fields %}]]></search>
+		<add position="before">
+			<![CDATA[
+			<!-- date of birth -->
+			{% if(tmdbirthday_status) %}
+				<div class="form-group">
+				  <label class="col-sm-2 control-label" for="input-birthday">{{ entry_birthday }}</label>
+					<div class="col-sm-10">
+						<input type="text" name="date_of_birth" readonly value="{{ date_of_birth }}" data-date-format="YYYY-MM-DD" placeholder="YYYY-MM-DD" id="input-birthday" class="form-control" />
+					</div>
+				</div>
+			{% endif %}
+			<!-- date of birth -->
+		]]></add>
+	</operation>
+</file>
+
+</modification>

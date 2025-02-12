@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>TMD Birth Day Reminder</name>
+  <code>TMD Birth Day Reminder</code>
+  <version>2.3.x</version>
+<author>TMD(opencartextensions.in)</author>
+<link>http://opencartextensions.in/</link>
+  
+<file path="admin/controller/common/column_left.php">
+	<operation>
+      <search><![CDATA[// Extension]]></search>
+      <add position="before">
+        <![CDATA[
+		/* date of birth */
+			if ($this->user->hasPermission('access', 'extension/module/tmdbirthday')) {		
+				$data['menus'][] = array(
+					'id'       => 'menu-tmdbirthday',
+					'icon'	   => 'fa-birthday-cake',
+					'name'	   => $this->language->get('text_tmdbirthday'),
+					'href'     => $this->url->link('extension/module/tmdbirthday', 'token=' . $this->session->data['token'], true),
+					'children' => array()
+				);		
+			}
+		/* date of birth */
+		]]>
+      </add>
+    </operation>
+</file>
+
+<file path="admin/language/*/common/column_left.php">
+	<operation>
+	<search><![CDATA[// Text]]></search>
+	<add position="after">
+		<![CDATA[
+		/* date of birth */
+		$_['text_tmdbirthday']            = 'Birthday Reminder';
+		/* date of birth */
+	]]></add>
+	</operation>
+</file>
+  
+<file path="admin/controller/customer/customer.php">
+	<operation>
+		<search><![CDATA[if (isset($this->error['address'])) {]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+				if (isset($this->error['date_of_birth'])) {
+					$data['error_date_of_birth'] = $this->error['date_of_birth'];
+				} else {
+					$data['error_date_of_birth'] = '';
+				}
+			/* date of birth */
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[if (isset($this->request->post['telephone'])) {]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+				$data['entry_birthday'] = $this->language->get('entry_birthday');
+				if (isset($this->request->post['date_of_birth'])) {
+					$data['date_of_birth'] = $this->request->post['date_of_birth'];
+				} elseif (!empty($customer_info)) {
+					$data['date_of_birth'] = $customer_info['date_of_birth'];
+				} else {
+					$data['date_of_birth'] = '';
+				}
+			/* date of birth */
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[// Custom field validation]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+				if ($this->request->post['date_of_birth'] == '') {
+					$this->error['date_of_birth'] = $this->language->get('error_date_of_birth');
+				}
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="admin/language/*/customer/customer.php">
+	<operation>
+		<search><![CDATA[// Entry]]></search>
+		<add position="after">
+			<![CDATA[
+			/* date of birth */
+			$_['entry_birthday']            = 'Date Of Birth';
+			$_['error_date_of_birth']       = 'Please select a date of birth!';
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="admin/model/customer/customer.php">
+	<operation>
+		<search><![CDATA[if ($data['password']) {]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+				if (isset($data['date_of_birth'])) {
+					$this->db->query("UPDATE " . DB_PREFIX . "customer SET date_of_birth = '" . $data['date_of_birth'] . "' WHERE customer_id = '" . (int)$customer_id . "'");
+				}
+			/* date of birth */
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[$customer_id = $this->db->getLastId();]]></search>
+		<add position="after">
+			<![CDATA[
+			/* date of birth */
+				if (isset($data['date_of_birth'])) {
+					$this->db->query("UPDATE " . DB_PREFIX . "customer SET date_of_birth = '" . $data['date_of_birth'] . "' WHERE customer_id = '" . (int)$customer_id . "'");
+				}
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="admin/view/template/customer/customer_form.tpl">
+	<operation>
+		<search index="0"><![CDATA[<?php foreach ($custom_fields as $custom_field) { ?>]]></search>
+		<add position="before">
+			<![CDATA[
+			<!-- date of birth -->
+				<div class="form-group required">
+				  <label class="col-sm-2 control-label" for="input-birthday"><?php echo $entry_birthday; ?></label>
+				  <div class="col-sm-10">
+					<div class="input-group date">
+						<input type="text" name="date_of_birth" value="<?php  echo $date_of_birth; ?>" data-date-format="YYYY-MM-DD" placeholder="YYYY-MM-DD" id="input-birthday" class="form-control" />
+						<div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+					</div>
+					<?php if ($error_date_of_birth) { ?>
+					<div class="text-danger"><?php echo $error_date_of_birth; ?></div>
+					<?php } ?></div>
+				</div>
+			<!-- date of birth -->
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[$('input[name="affiliate"]').on('change', function() {]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+				$('.tmddate').datetimepicker({
+					language: '{{ datepicker }}',
+					pickTime: false
+				});
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/controller/account/register.php">
+	<operation>
+		<search><![CDATA[if (isset($this->error['custom_field'])) {]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+				if (isset($this->error['date_of_birth'])) {
+					$data['error_date_of_birth'] = $this->error['date_of_birth'];
+				} else {
+					$data['error_date_of_birth'] = '';
+				}
+			/* date of birth */
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[// Custom Fields]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+				$data['entry_birthday'] = $this->language->get('entry_birthday');
+				if (isset($this->request->post['date_of_birth'])) {
+					$data['date_of_birth'] = $this->request->post['date_of_birth'];
+				} else {
+					$data['date_of_birth'] = '';
+				}
+			/* date of birth */
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[// Custom field validation]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+				if ($this->request->post['date_of_birth'] == '') {
+					$this->error['date_of_birth'] = $this->language->get('error_date_of_birth');
+				}
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/language/*/account/register.php">
+	<operation>
+		<search><![CDATA[// Entry]]></search>
+		<add position="after">
+			<![CDATA[
+			/* date of birth */
+			$_['entry_birthday']            = 'Date Of Birth';
+			$_['error_date_of_birth']       = 'Please select a date of birth!';
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/model/account/customer.php">
+	<operation>
+		<search><![CDATA[$customer_id = $this->customer->getId();]]></search>
+		<add position="after">
+			<![CDATA[
+			/* date of birth */
+				if (isset($data['date_of_birth'])) {
+					$this->db->query("UPDATE " . DB_PREFIX . "customer SET date_of_birth = '" . $data['date_of_birth'] . "' WHERE customer_id = '" . (int)$customer_id . "'");
+				}
+			/* date of birth */
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[$customer_id = $this->db->getLastId();]]></search>
+		<add position="after">
+			<![CDATA[
+			/* date of birth */
+				if (isset($data['date_of_birth'])) {
+					$this->db->query("UPDATE " . DB_PREFIX . "customer SET date_of_birth = '" . $data['date_of_birth'] . "' WHERE customer_id = '" . (int)$customer_id . "'");
+				}
+			/* date of birth */
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[public function deleteLoginAttempts($email) {]]></search>
+		<add position="before">
+			<![CDATA[
+			public function getDOBCustomer($date) {
+				$sql = "SELECT *, CONCAT(c.firstname, ' ', c.lastname) AS name, cgd.name AS customer_group FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "customer_group_description cgd ON (c.customer_group_id = cgd.customer_group_id)";
+					
+				$sql .= " WHERE cgd.language_id = '" . (int)$this->config->get('config_language_id') . "' and c.date_of_birth='".$date."'";
+						
+				$query = $this->db->query($sql);
+				return $query->rows;
+			}
+			
+			public function getbirthcustomer() {
+				$date = date('Y-m-d');
+				$sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "customer WHERE date_of_birth = '".$date."'";
+					
+				$query = $this->db->query($sql);
+				return $query->row['total'];
+			}]]></add>
+	</operation>
+</file>
+
+<file path="catalog/view/theme/default/template/account/register.tpl">
+	<operation>
+		<search index="0"><![CDATA[<?php foreach ($custom_fields as $custom_field) { ?>]]></search>
+		<add position="before">
+			<![CDATA[
+			<!-- date of birth -->
+				<div class="form-group required">
+				  <label class="col-sm-2 control-label" for="input-birthday"><?php echo $entry_birthday; ?></label>
+				  <div class="col-sm-10">
+					<div class="input-group date">
+						<input type="text" name="date_of_birth" value="<?php  echo $date_of_birth; ?>" data-date-format="YYYY-MM-DD" placeholder="YYYY-MM-DD" id="input-birthday" class="form-control" />
+						<div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+					</div>
+					<?php if ($error_date_of_birth) { ?>
+					<div class="text-danger"><?php echo $error_date_of_birth; ?></div>
+					<?php } ?></div>
+				</div>
+			<!-- date of birth -->
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/view/theme/journal2/template/account/register.tpl">
+	<operation>
+		<search index="0"><![CDATA[<?php foreach ($custom_fields as $custom_field) { ?>]]></search>
+		<add position="before">
+			<![CDATA[
+			<!-- date of birth -->
+				<div class="form-group required">
+				  <label class="col-sm-2 control-label" for="input-birthday"><?php echo $entry_birthday; ?></label>
+				  <div class="col-sm-10">
+					<div class="input-group date">
+						<input type="text" name="date_of_birth" value="<?php  echo $date_of_birth; ?>" data-date-format="YYYY-MM-DD" placeholder="YYYY-MM-DD" id="input-birthday" class="form-control" />
+						<div class="input-group-btn"><button type="button" class="btn btn-default button"><i class="fa fa-calendar" style="padding-bottom: 14px;"></i></button></div>
+					</div>
+					<?php if ($error_date_of_birth) { ?>
+					<div class="text-danger"><?php echo $error_date_of_birth; ?></div>
+					<?php } ?></div>
+				</div>
+			<!-- date of birth -->
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/view/theme/journal3/template/account/register.tpl">
+	<operation>
+		<search index="0"><![CDATA[<?php foreach ($custom_fields as $custom_field) { ?>]]></search>
+		<add position="before">
+			<![CDATA[
+			<!-- date of birth -->
+				<div class="form-group required">
+				  <label class="col-sm-2 control-label" for="input-birthday"><?php echo $entry_birthday; ?></label>
+				  <div class="col-sm-10">
+					<div class="input-group date">
+						<input type="text" name="date_of_birth" value="<?php  echo $date_of_birth; ?>" data-date-format="YYYY-MM-DD" placeholder="YYYY-MM-DD" id="input-birthday" class="form-control" />
+						<div class="input-group-btn"><button type="button" class="btn btn-default button"><i class="fa fa-calendar" style="padding-bottom: 5px;"></i></button></div>
+					</div>
+					<?php if ($error_date_of_birth) { ?>
+					<div class="text-danger"><?php echo $error_date_of_birth; ?></div>
+					<?php } ?></div>
+				</div>
+			<!-- date of birth -->
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/controller/account/edit.php">
+	<operation>
+		<search><![CDATA[// Custom Fields]]></search>
+		<add position="before">
+			<![CDATA[
+			/* date of birth */
+				$data['entry_birthday'] = $this->language->get('entry_birthday');
+				if (isset($this->request->post['date_of_birth'])) {
+					$data['date_of_birth'] = $this->request->post['date_of_birth'];
+				} elseif (!empty($customer_info)) {
+					$data['date_of_birth'] = $customer_info['date_of_birth'];
+				} else {
+					$data['date_of_birth'] = '';
+				}
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/language/*/account/edit.php">
+	<operation>
+		<search><![CDATA[// Entry]]></search>
+		<add position="after">
+			<![CDATA[
+			/* date of birth */
+			$_['entry_birthday']            = 'Date Of Birth';
+			/* date of birth */
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/view/theme/*/template/account/edit.tpl">
+	<operation>
+		<search><![CDATA[<?php foreach ($custom_fields as $custom_field) { ?>]]></search>
+		<add position="before">
+			<![CDATA[
+			<!-- date of birth -->
+				<div class="form-group">
+				  <label class="col-sm-2 control-label" for="input-birthday"><?php echo $entry_birthday; ?></label>
+					<div class="col-sm-10">
+						<input type="text" name="date_of_birth" readonly value="<?php echo $date_of_birth; ?>" data-date-format="YYYY-MM-DD" placeholder="YYYY-MM-DD" id="input-birthday" class="form-control" />
+					</div>
+				</div>
+			<!-- date of birth -->
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/language/*/extension/total/coupon.php">
+	<operation>
+		<search><![CDATA[// Entry]]></search>
+		<add position="after">
+			<![CDATA[
+			$_['text_birthday']  = 'Birth Day Coupon';
+		]]></add>
+	</operation>
+</file>
+
+<file path="catalog/model/extension/total/coupon.php">	
+	<operation>
+		<search><![CDATA[public function getCoupon($code) {]]></search>
+		<add position="before"><![CDATA[
+		/* Birthday reminder */
+			public function getTMDTotalCouponHistoriesByCoupon($coupon) {
+				$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "tmd_coupon_history` WHERE code = '" . $this->db->escape($coupon) . "' AND customer_id = '" . (int)$this->customer->getId() . "'");	
+				
+				return $query->row['total'];
+			}
+			
+			public function getTMDTotalCouponHistoriesByCustomerId($coupon, $customer_id) {
+				$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "tmd_coupon_history` WHERE code = '" . $this->db->escape($coupon) . "' AND customer_id = '" . (int)$customer_id . "'");
+				
+				return $query->row['total'];
+			}
+			public function getTmdCoupon($code) {
+				$tmdstatus 		= $this->config->get('tmdbirthday_status');
+				$tmdcode 		= $this->config->get('tmdbirthday_coupons');
+				$tmdtype 		= $this->config->get('tmdbirthday_dis_type');
+				$tmddiscount 	= $this->config->get('tmdbirthday_dis_value');
+				$tmdtotal 		= $this->config->get('tmdbirthday_total_amount');
+				$tmduse_total 	= $this->config->get('tmdbirthday_use_coupon');
+				$tmduse_customer= $this->config->get('tmdbirthday_use_customer');
+				$tmdstart 		= $this->config->get('tmdbirthday_start');
+				$tmdend 		= $this->config->get('tmdbirthday_end');
+				$date_now       = date('Y-m-d');
+
+				if($tmdstatus==1){
+					if($tmdstart < $date_now && $tmdend > $date_now){
+						if($tmdcode == $code){
+							if ($tmdtotal > $this->cart->getSubTotal()) {
+								$status = false;
+							}
+
+							$coupon_total = $this->getTMDTotalCouponHistoriesByCoupon($code);
+
+							if ($tmduse_total > 0 && ($coupon_total >= $tmduse_total)) {
+								$status = false;
+							}
+
+							if ($this->customer->getId()) {
+								$status = false;
+							}
+
+							if ($this->customer->getId()) {
+								$customer_total = $this->getTMDTotalCouponHistoriesByCustomerId($code, $this->customer->getId());
+								
+								if ($tmduse_customer > 0 && ($customer_total >= $tmduse_customer)) {
+									$status = false;
+								}
+							}
+						}
+					}
+
+					return array(
+						'coupon_id'     => 0,
+						'code'          => $tmdcode,
+						'name'          => $this->language->get('text_birthday').'('.$tmdcode.')',
+						'type'          => $tmdtype,
+						'discount'      => $tmddiscount,
+						'shipping'      => '',
+						'total'         => $tmdtotal,
+						'product'       => '',
+						'date_start'    => $tmdstart,
+						'date_end'      => $tmdend,
+						'uses_total'    => $tmduse_total,
+						'uses_customer' => $tmduse_customer,
+						'status'        => $tmdstatus,
+						'date_added'    => $date_now
+					);
+				}
+			}
+		/* Birthday reminder */
+		]]></add>
+	</operation>
+
+	<operation>
+		<search index="0"><![CDATA[if ($status) {]]></search>
+		<add position="before"><![CDATA[
+		/* Birthday reminder */
+		if(!$status) {
+			$status1 = true;
+			$tmdstatus 		= $this->config->get('tmdbirthday_status');
+			$tmdcode 		= $this->config->get('tmdbirthday_coupons');
+			$tmdtype 		= $this->config->get('tmdbirthday_dis_type');
+			$tmddiscount 	= $this->config->get('tmdbirthday_dis_value');
+			$tmdtotal 		= $this->config->get('tmdbirthday_total_amount');
+			$tmduse_total 	= $this->config->get('tmdbirthday_use_coupon');
+			$tmduse_customer= $this->config->get('tmdbirthday_use_customer');
+			$tmdstart 		= $this->config->get('tmdbirthday_start');
+			$tmdend 		= $this->config->get('tmdbirthday_end');
+			$date_now       = date('Y-m-d');
+
+			if($tmdstatus==1){
+				if($tmdstart < $date_now && $tmdend > $date_now){
+					if($tmdcode == $code){
+						if ($tmdtotal > $this->cart->getSubTotal()) {
+							$status1 = false;
+						}
+
+						$coupon_total = $this->getTMDTotalCouponHistoriesByCoupon($code);
+
+						if ($tmduse_total > 0 && ($coupon_total >= $tmduse_total)) {
+							$status1 = false;
+						}
+
+						if (!$this->customer->getId()) {
+							$status1 = false;
+						}
+
+						if ($this->customer->getId()) {
+							$customer_total = $this->getTMDTotalCouponHistoriesByCustomerId($code, $this->customer->getId());
+							
+							if ($tmduse_customer > 0 && ($customer_total >= $tmduse_customer)) {
+								$status1 = false;
+							}
+						}
+					}
+				}
+				if($status1) {
+					$id = rand(0, 9);
+					return array(
+						'coupon_id'     => $id+1,
+						'code'          => $tmdcode,
+						'name'          => $this->language->get('text_birthday').'('.$tmdcode.')',
+						'type'          => $tmdtype,
+						'discount'      => $tmddiscount,
+						'shipping'      => '',
+						'total'         => $tmdtotal,
+						'product'       => '',
+						'date_start'    => $tmdstart,
+						'date_end'      => $tmdend,
+						'uses_total'    => $tmduse_total,
+						'uses_customer' => $tmduse_customer,
+						'status'        => $tmdstatus,
+						'date_added'    => $date_now
+					);
+				}
+			}
+		}
+		/* Birthday reminder */
+		]]></add>
+	</operation>
+
+	<operation>
+		<search index="0"><![CDATA[$coupon_info = $this->getCoupon($this->session->data['coupon']);]]></search>
+		<add position="replace"><![CDATA[
+		/* Birthday reminder */
+			$tmd_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "tmd_customer_coupon` tc LEFT JOIN `" . DB_PREFIX . "coupon` c ON (tc.coupon_id = c.coupon_id) WHERE tc.customer_id = '" . $this->customer->getId() . "' AND ((c.date_start = '0000-00-00' OR c.date_start < NOW()) AND (c.date_end = '0000-00-00' OR c.date_end > NOW())) AND c.status='1'");	
+			if(!empty($tmd_query->row['code'])) {
+				$coupon_info = $this->getCoupon($this->session->data['coupon']);
+			} else {
+				$coupon_info = $this->getTmdCoupon($this->session->data['coupon']);
+			}
+		/* Birthday reminder */
+		]]></add>
+	</operation>
+
+	<operation>
+		<search index="1"><![CDATA[if ($coupon_info) {]]></search>
+		<add position="replace"><![CDATA[
+		if(!$coupon_info) {
+			$this->db->query("INSERT INTO `" . DB_PREFIX . "tmd_coupon_history` SET code = '" . $this->db->escape($code) . "',coupon_id = '0', order_id = '" . (int)$order_info['order_id'] . "', customer_id = '" . (int)$order_info['customer_id'] . "', amount = '" . (float)$order_total['value'] . "', date_added = NOW()");
+		} else if ($coupon_info) {
+		]]></add>
+	</operation>
+	
+</file>
+	
+</modification>
