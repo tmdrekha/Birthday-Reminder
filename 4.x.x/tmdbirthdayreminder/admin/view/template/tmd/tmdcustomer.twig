@@ -29,9 +29,13 @@
 				<div class="mb-3 required">
 					<label class="col-form-label" for="input-date_start">{{ entry_date_start }}</label>
 					<div class="input-group ">
+                        {% if VERSION>=4.1.0.0%}
+                        <input type="date" name="date_start" value="" data-date-format="YYYY-MM-DD" placeholder="{{ entry_start }}" id="input-date_start" class="form-control datestart"/>
+                        {% else %}
 						<input type="text" name="date_start" value="" data-date-format="YYYY-MM-DD" placeholder="{{ entry_start }}" id="input-date_start" class="form-control datestart"/>
         				<div class="input-group-text"><i class="fa-regular fa-calendar"></i></div>
 					    <div id="error-date_start" class="invalid-feedback"></div>
+                        {% endif %}
                     </div>
 				</div>
 			</div>
@@ -39,9 +43,13 @@
 				<div class="mb-3 required">
 					<label class="col-form-label" for="input-date_end">{{ entry_date_end }}</label>
 					<div class="input-group ">
+                         {% if VERSION>=4.1.0.0%}
+                         <input type="date" name="date_end" value="" data-date-format="YYYY-MM-DD" placeholder="{{ entry_end }}" id="input-date_end" class="form-control dateend"/>
+                         {% else %}
 						<input type="text" name="date_end" value="" data-date-format="YYYY-MM-DD" placeholder="{{ entry_end }}" id="input-date_end" class="form-control dateend"/>
         				<div class="input-group-text"><i class="fa-regular fa-calendar"></i></div>
 					    <div id="error-date_end" class="invalid-feedback"></div>
+                        {% endif %}
                     </div>
 				</div>
 			</div>

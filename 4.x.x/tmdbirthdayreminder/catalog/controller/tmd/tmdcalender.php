@@ -42,11 +42,22 @@ class Tmdcalender extends \Opencart\System\Engine\Controller {
 		$output = str_replace($find, $replace, $template_buffer);
 
 		$template_buffer = $this->getTemplateBuffer($route, $output);
-		$find            = '{% if config_telephone_display %}';		
+		$find            = '{% if config_telephone_display %}';
+		if(VERSION>='4.1.0.0'){		
 		$replace         = '{% if tmdbirthday_status %}<div class="col mb-3 required">
         <label for="input-email" class="form-label">{{ entry_birthday }}</label>
           <div class="input-group">
-            <input type="text" name="date_of_birth" value="{{ date_of_birth }}" placeholder="{{ entry_birthday }}" id="input-birthday" class="form-control tmddate"/>
+            <input type="date" name="date_of_birth" value="{{ date_of_birth }}" placeholder="{{ entry_birthday }}" id="input-birthday" class="form-control tmddate"/>
+            <div class="float-end">
+            <i>{{ text_correctdate }}</i>
+          </div>
+        </div>{% endif %}'.'{% if config_telephone_display %}';
+		}else{
+
+		$replace         = '{% if tmdbirthday_status %}<div class="col mb-3 required">
+        <label for="input-email" class="form-label">{{ entry_birthday }}</label>
+          <div class="input-group">
+            <input type="text" name="date_of_birth" value="{{ date_of_birth }}" placeholder="{{ entry_birthday }}" id="input-birthday" class="form-control tmddate date"/>
             <div class="input-group-text"><i class="fa-regular fa-calendar"></i></div>
               <div id="error-birthday" class="invalid-feedback"></div>
           </div>
@@ -54,7 +65,8 @@ class Tmdcalender extends \Opencart\System\Engine\Controller {
             <i>{{ text_correctdate }}</i>
           </div>
         </div>{% endif %}'.'{% if config_telephone_display %}';
-		
+
+		}
 		$output = str_replace($find, $replace, $template_buffer);
 	}
 
@@ -832,13 +844,32 @@ class Tmdcalender extends \Opencart\System\Engine\Controller {
 					$country = $payment_country_info['name'];
 					$iso_code_2 = $payment_country_info['iso_code_2'];
 					$iso_code_3 = $payment_country_info['iso_code_3'];
-					$address_format = $payment_country_info['address_format'];
+					if(VERSION>='4.1.0.0'){
+						$address_format_id = $payment_country_info['address_format_id'];
+					}else{
+						$address_format = $payment_country_info['address_format'];
+					}
 				} else {
 					$country = '';
 					$iso_code_2 = '';
 					$iso_code_3 = '';
 					$address_format = '';
+					$address_format_id=0;
 				}
+
+
+				// Address Format
+				if(VERSION>='4.1.0.0'){
+				$this->load->model('localisation/address_format');
+
+				$address_format_info = $this->model_localisation_address_format->getAddressFormat($address_format_id);
+
+				if ($address_format_info) {
+					$address_format = $address_format_info['address_format'];
+				} else {
+					$address_format = '';
+				}
+			}
 
 				$this->load->model('localisation/zone');
 
@@ -911,14 +942,30 @@ class Tmdcalender extends \Opencart\System\Engine\Controller {
 						$country = $shipping_country_info['name'];
 						$iso_code_2 = $shipping_country_info['iso_code_2'];
 						$iso_code_3 = $shipping_country_info['iso_code_3'];
-						$address_format = $shipping_country_info['address_format'];
+						if(VERSION>='4.1.0.0'){
+						  $address_format_id = $shipping_country_info['address_format_id'];
+						}else{
+						  $address_format = $shipping_country_info['address_format'];
+						}
 					} else {
 						$country = '';
 						$iso_code_2 = '';
 						$iso_code_3 = '';
 						$address_format = '';
+						$address_format_id =0;
 					}
 
+                   if(VERSION>='4.1.0.0'){
+					$this->load->model('localisation/address_format');
+
+					$address_format_info = $this->model_localisation_address_format->getAddressFormat($address_format_id);
+
+					if ($address_format_info) {
+						$address_format = $address_format_info['address_format'];
+					} else {
+						$address_format = '';
+					}
+				}
 					$this->load->model('localisation/zone');
 
 					$zone_info = $this->model_localisation_zone->getZone($this->request->post['shipping_zone_id']);
@@ -1052,10 +1099,24 @@ class Tmdcalender extends \Opencart\System\Engine\Controller {
 			
 			$template_buffer = $this->getTemplateBuffer($route, $output);
 			$find            = '{% if config_telephone_display %}';
+			if(VERSION>='4.1.0.0'){
 			$replace         = '{% if tmdbirthday_status %}<div class="row mb-3 required">
             <label for="input-birthday" class="col-sm-2 col-form-label">{{ entry_birthday }}</label>
             <div class="col-sm-10">
 			<div class="input-group">
+			<input type="date" name="date_of_birth" value="{{ date_of_birth }}" placeholder="{{ entry_birthday }}" id="input-birthday" class="form-control date"/>
+               
+              </div>
+			  <div class="float-end">
+			  <i>{{ text_correctdate }}</i>
+			  </div>
+			  </div>
+			  </div>{% endif %}'.'{% if config_telephone_display %}';
+			}else{
+				$replace         = '{% if tmdbirthday_status %}<div class="row mb-3 required">
+              <label for="input-birthday" class="col-sm-2 col-form-label">{{ entry_birthday }}</label>
+             <div class="col-sm-10">
+			 <div class="input-group">
 			<input type="text" name="date_of_birth" value="{{ date_of_birth }}" placeholder="{{ entry_birthday }}" id="input-birthday" class="form-control date"/>
                 <div class="input-group-text"><i class="fa-regular fa-calendar"></i></div>
                 <div id="error-birthday" class="invalid-feedback"></div>
@@ -1065,6 +1126,7 @@ class Tmdcalender extends \Opencart\System\Engine\Controller {
 			  </div>
 			  </div>
 			  </div>{% endif %}'.'{% if config_telephone_display %}';
+			}
 			  $output = str_replace($find, $replace, $template_buffer);
 			  
 			}

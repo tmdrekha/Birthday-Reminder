@@ -18,6 +18,7 @@ private $db;
 		$regkey= $this->config->get($data['code']);
 		$url = 'https://www.opencartextensions.in/index.php?route=api/newkey&v=4&foldername='.$data['route'].'&regkey='.$regkey.'&user_token='.$user_token;
 		$curl = curl_init($url);
+		curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']); // Use current browser's user agent
 		curl_setopt($curl, CURLOPT_HEADER, 0);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);

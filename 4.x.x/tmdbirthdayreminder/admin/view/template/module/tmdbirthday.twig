@@ -60,14 +60,22 @@
 								  <div class="row">
 										<div class="col-sm-6">
 											<div class="input-group">
+												{% if VERSION>=4.1.0.0%}
+                                                <input type="date" name="module_tmdbirthday_start" value="{{ module_tmdbirthday_start }}" data-date-format="YYYY-MM-DD" placeholder="{{ entry_start }}" id="input-start" class="form-control couponstart"/>
+												{% else %}
 												<input type="text" name="module_tmdbirthday_start" value="{{ module_tmdbirthday_start }}" data-date-format="YYYY-MM-DD" placeholder="{{ entry_start }}" id="input-start" class="form-control couponstart"/>
-	                      <div class="input-group-text"><i class="fa-regular fa-calendar"></i></div>
+	                                         <div class="input-group-text"><i class="fa-regular fa-calendar"></i></div>
+											 {% endif %}
 											</div>
 										</div>
 										<div class="col-sm-6">
 											<div class="input-group">
+												{% if VERSION>=4.1.0.0%}
+	                                              <input type="date" name="module_tmdbirthday_end" value="{{ module_tmdbirthday_end }}" data-date-format="YYYY-MM-DD" placeholder="{{ entry_end }}" id="input-end" class="form-control couponend"/>
+												{% else %}
 												<input type="text" name="module_tmdbirthday_end" value="{{ module_tmdbirthday_end }}" data-date-format="YYYY-MM-DD" placeholder="{{ entry_end }}" id="input-end" class="form-control couponend"/>
-	                      <div class="input-group-text"><i class="fa-regular fa-calendar"></i></div>
+	                                          <div class="input-group-text"><i class="fa-regular fa-calendar"></i></div>
+											  {% endif %}
 											</div>
 										</div>
 								  </div>

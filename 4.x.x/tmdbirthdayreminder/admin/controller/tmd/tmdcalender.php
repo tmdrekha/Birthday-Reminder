@@ -72,9 +72,12 @@ class Tmdcalender extends \Opencart\System\Engine\Controller {
                   <label for="input-birthday" class="col-sm-2 col-form-label">{{ entry_birthday }}</label>
                   <div class="col-sm-10 col-md-4">
                     <div class="input-group">
+					{% if VERSION>=4.1.0.0 %}
+                      <input type="date" name="date_of_birth" value="{{ date_of_birth }}" placeholder="{{ entry_birthday }}" id="input-birthday" class="form-control"/>
+					{% else %}
                       <input type="text" name="date_of_birth" value="{{ date_of_birth }}" placeholder="{{ entry_birthday }}" id="input-birthday" class="form-control date"/>
                       <div class="input-group-text"><i class="fa-regular fa-calendar"></i></div>
-                      
+                       {% endif %}
                     </div>
                      <div id="error-birthday" class="invalid-feedback"></div>
                   </div>

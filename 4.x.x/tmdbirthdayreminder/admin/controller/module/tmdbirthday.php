@@ -272,10 +272,17 @@ class Tmdbirthday extends \Opencart\System\Engine\Controller {
 			$eventaction='extension/tmdbirthdayreminder/tmd/tmdcalender|addCustomer';
 		}
 
+		if(VERSION>='4.1.0.0'){
+           $eventtrigger ='admin/model/customer/customer.addCustomer/after';
+		}else{
+           $eventtrigger ='admin/model/customer/customer/addCustomer/after';
+
+		}
+
 		$eventrequest=[
 			'code'=>'tmd_addCustomer',
 			'description'=>'TMD Add Customer',
-			'trigger'=>'admin/model/customer/customer/addCustomer/after',
+			'trigger'=>$eventtrigger,
 			'action'=>$eventaction,
 			'status'=>'1',
 			'sort_order'=>'1',
@@ -294,10 +301,15 @@ class Tmdbirthday extends \Opencart\System\Engine\Controller {
 		} else{
 			$eventaction='extension/tmdbirthdayreminder/tmd/tmdcalender|editCustomer';
 		}
+		if(VERSION>='4.1.0.0'){
+           $eventtrigger = 'admin/model/customer/customer.editCustomer/after';
+		}else{
+		   $eventtrigger = 'admin/model/customer/customer/editCustomer/after';
+		}
 		$eventrequest=[
 			'code'=>'tmd_editCustomer',
 			'description'=>'TMD Edit Customer',
-			'trigger'=>'admin/model/customer/customer/editCustomer/after',
+			'trigger'=>$eventtrigger,
 			'action'=>$eventaction,
 			'status'=>'1',
 			'sort_order'=>'1',
@@ -363,10 +375,15 @@ class Tmdbirthday extends \Opencart\System\Engine\Controller {
 		} else{
 			$eventaction='extension/tmdbirthdayreminder/tmd/tmdcalender|addCustomer';
 		}
+		if(VERSION>='4.1.0.0'){
+            $eventtrigger = 'catalog/model/account/customer.addCustomer/after';
+		}else{
+			$eventtrigger = 'catalog/model/account/customer/addCustomer/after';
+		}
 		$eventrequest=[
 			'code'=>'tmd_addFrontCustomer',
 			'description'=>'TMD Front Add Customer',
-			'trigger'=>'catalog/model/account/customer/addCustomer/after',
+			'trigger'=>$eventtrigger,
 			'action'=>$eventaction,
 			'status'=>'1',
 			'sort_order'=>'1',
@@ -386,10 +403,15 @@ class Tmdbirthday extends \Opencart\System\Engine\Controller {
 		} else{
 			$eventaction='extension/tmdbirthdayreminder/tmd/tmdcalender|editCustomer';
 		}
+		if(VERSION>='4.1.0.0'){
+            $eventtrigger = 'catalog/model/account/customer.editCustomer/after';
+		}else{
+			$eventtrigger = 'catalog/model/account/customer/editCustomer/after';
+		}
 		$eventrequest=[
 			'code'=>'tmd_editFrontCustomer',
 			'description'=>'TMD Front Edit Customer',
-			'trigger'=>'catalog/model/account/customer/editCustomer/after',
+			'trigger'=>$eventtrigger,
 			'action'=>$eventaction,
 			'status'=>'1',
 			'sort_order'=>'1',
@@ -409,10 +431,15 @@ class Tmdbirthday extends \Opencart\System\Engine\Controller {
 		} else{
 			$eventaction='extension/tmdbirthdayreminder/tmd/tmdcalender|getCoupon';
 		}
+		if(VERSION>='4.1.0.0'){
+            $eventtrigger = 'catalog/model/marketing/coupon.getCoupon/after';
+		}else{
+			$eventtrigger = 'catalog/model/marketing/coupon/getCoupon/after';
+		}
 		$eventrequest=[
 			'code'=>'tmd_getCoupon',
 			'description'=>'TMD Front GetCoupon',
-			'trigger'=>'catalog/model/marketing/coupon/getCoupon/after',
+			'trigger'=>$eventtrigger,
 			'action'=>$eventaction,
 			'status'=>'1',
 			'sort_order'=>'1',
@@ -433,10 +460,16 @@ class Tmdbirthday extends \Opencart\System\Engine\Controller {
 			$eventaction='extension/tmdbirthdayreminder/tmd/tmdcalender|getTotal';
 		}
 
+		if(VERSION>='4.1.0.0'){
+            $eventtrigger = 'catalog/model/extension/opencart/total/coupon.getTotal/after';
+		}else{
+			$eventtrigger = 'catalog/model/extension/opencart/total/coupon/getTotal/after';
+		}
+
 		$eventrequest=[
 			'code'=>'tmd_getTotal',
 			'description'=>'TMD Front GetTotal',
-			'trigger'=>'catalog/model/extension/opencart/total/coupon/getTotal/after',
+			'trigger'=>$eventtrigger,
 			'action'=>$eventaction,
 			'status'=>'1',
 			'sort_order'=>'1',
